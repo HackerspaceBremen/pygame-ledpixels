@@ -1,6 +1,5 @@
 import sys
 import pygame
-import pygame.freetype
 import pixelDisplay
 
 from pygame.locals import *
@@ -9,7 +8,7 @@ from pygame.locals import *
 SCALE = 10
 SPEED = 30
 
-pixelDisplay = pixelDisplay.PixelDisplay("COM3")
+pixelDisplay = pixelDisplay.PixelDisplay("/dev/cu.usbmodem458221")
 pixelSize = pixelDisplay.size()
 
 pygame.init()
@@ -20,12 +19,13 @@ windowSurface = pygame.display.set_mode(windowSize)
 
 pixelSurface = pygame.Surface(pixelSize)
 
-font = pygame.freetype.Font("ttf-bitstream-vera-1.10/VeraMono.ttf", size = 12)
+font = pygame.font.Font("ttf-bitstream-vera-1.10/VeraMono.ttf", 12)
 
-(message, messageRect) = font.render("Hello World", fgcolor = pygame.Color("#ffffff"))
+message = font.render("Hello World", True, pygame.Color("#ffffff"))
+messageRect = message.get_rect()
 
 x = 10
-y = (pixelSurface.get_height() / 2) - (message.get_height() / 2)
+y = 4
 
 while True:
     for event in pygame.event.get():
@@ -40,7 +40,8 @@ while True:
 
     pixelDisplay.draw(pixelSurface)
     pygame.transform.scale(pixelSurface, windowSize, windowSurface)
-    font.render_to(windowSurface, (5,5), "FPS: {:.1f}".format(fpsClock.get_fps()), fgcolor = pygame.Color("#ff0000"))
+    fps = font.render("FPS: {:.1f}".format(fpsClock.get_fps()), True, pygame.Color("#ff0000"))
+    windowSurface.blit(fps, (5, 5))
     pygame.display.update()
 
-    fpsClock.tick(30)
+    fpsClock.tick(100)
