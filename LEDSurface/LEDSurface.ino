@@ -3,7 +3,7 @@
 #define LED_WIDTH    90
 #define LED_HEIGHT   20
 #define LEDS_PER_STRIP 360
-#define CONFIG       WS2811_800kHz
+#define CONFIG       WS2811_800kHz | WS2811_GRB
 
 const int frameLength = LED_WIDTH * LED_HEIGHT;
 const int frameSize = frameLength * 4;
@@ -52,7 +52,7 @@ void loop() {
       g = (0x00ff0000 & col) >> 16;
       b = (0xff000000 & col) >> 24;
       
-      leds.setPixel(pixel, g, r, b);
+      leds.setPixel(pixel, r, g, b);
     }
   } else {
     // swallow garbage
