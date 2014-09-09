@@ -8,7 +8,7 @@ from pygame.locals import *
 SCALE = 10
 SPEED = 20
 
-pixelDisplay = pixelDisplay.PixelDisplay("/dev/cu.usbmodem458221")
+pixelDisplay = pixelDisplay.PixelDisplay("COM25")
 pixelSize = pixelDisplay.size()
 
 pygame.init()
@@ -21,7 +21,7 @@ pixelSurface = pygame.Surface(pixelSize)
 
 font = pygame.font.Font("ttf-bitstream-vera-1.10/VeraBd.ttf", 12)
 
-message = font.render("*** HSHB *** Hello World ***", True, pygame.Color("#ffffff"))
+message = font.render("*** Space ist offen & Jens ist nicht kalt !!! ***", True, pygame.Color("#ffffff"))
 messageRect = message.get_rect()
 
 x = 10
