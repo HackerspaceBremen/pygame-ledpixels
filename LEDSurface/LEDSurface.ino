@@ -14,6 +14,9 @@ int receiveMem[frameLength];
 
 int frame = 0;
 
+int maskR, maskG, maskB;
+char shiftR, shiftG, shiftB;
+
 OctoWS2811 leds(LEDS_PER_STRIP, displayMemory, drawingMemory, CONFIG);
 
 void setup() {
@@ -32,6 +35,14 @@ void loop() {
     Serial.print(",");
     Serial.print(LED_HEIGHT);
     Serial.println();
+  } else if (messageType == '+') {
+    // receive config: RGB masks & shift
+    Serial.readBytes((char*)&maskR, 4);
+    Serial.readBytes((char*)&maskG, 4);
+    Serial.readBytes((char*)&maskB, 4);
+    shiftR = Serial.read();
+    shiftG = Serial.read();
+    shiftB = Serial.read();
   } else if (messageType == '*') {
     // receive a frame
     Serial.readBytes((char*)receiveMem, frameSize);
@@ -48,9 +59,9 @@ void loop() {
         pixel = y * LED_WIDTH + LED_WIDTH - (x + 1);
       }
       col = receiveMem[i];
-      r = (0x0000ff00 & col) >> 8;
-      g = (0x00ff0000 & col) >> 16;
-      b = (0xff000000 & col) >> 24;
+      r = (maskR & col) >> shiftR;
+      g = (maskG & col) >> shiftG;
+      b = (maskB & col) >> shiftB;
       
       leds.setPixel(pixel, r, g, b);
     }
