@@ -1,25 +1,22 @@
 import sys
 import pygame
-import pixelDisplay
+import led
 
 from pygame.locals import *
 
 
+
 SCALE = 10
 SPEED = 20
+SIZE = (90, 20)
 
 pygame.init()
-pygame.display.set_mode()
-
-pixelDisplay = pixelDisplay.PixelDisplay("/dev/cu.usbmodem458221")
-pixelSize = pixelDisplay.get_size()
 
 fpsClock = pygame.time.Clock()
+pixelSurface = pygame.Surface(SIZE)
 
-windowSize = tuple([SCALE * x for x in pixelSize])
-windowSurface = pygame.display.set_mode(windowSize)
-
-pixelSurface = pixelDisplay.get_surface()
+simDisplay = led.sim.SimDisplay(SIZE)
+teensyDisplay = led.teensy.TeensyDisplay() # FIXME this is just a dummy
 
 font = pygame.font.Font("ttf-bitstream-vera-1.10/VeraBd.ttf", 12)
 
@@ -34,15 +31,15 @@ while True:
             pygame.quit()
             sys.exit()
 
-    x = - ((pygame.time.get_ticks() / SPEED) % (messageRect.width + pixelDisplay.width) - pixelDisplay.width)
+    x = - ((pygame.time.get_ticks() / SPEED) % (messageRect.width + pixelSurface.get_width()) - pixelSurface.get_width())
     pixelSurface.fill(pygame.Color(0, 0, 0))
     messageRect.topleft = (x, y)
     pixelSurface.blit(message, messageRect)
 
-    pixelDisplay.draw()
-    pygame.transform.scale(pixelSurface, windowSize, windowSurface)
     fps = font.render("FPS: {:.1f}".format(fpsClock.get_fps()), True, pygame.Color("#ff0000"))
-    windowSurface.blit(fps, (5, 5))
-    pygame.display.update()
+    pixelSurface.blit(fps, (0,0))
 
-    fpsClock.tick(30)
+    teensyDisplay.update(pixelSurface)
+    simDisplay.update(pixelSurface)
+
+    fpsClock.tick(500)
