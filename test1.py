@@ -4,23 +4,20 @@ import led
 
 from pygame.locals import *
 
-
-
-SCALE = 10
-SPEED = 20
-SIZE = (90, 20)
+speed = 30
 
 pygame.init()
+pygame.display.set_mode()
 
 fpsClock = pygame.time.Clock()
-pixelSurface = pygame.Surface(SIZE)
 
-simDisplay = led.sim.SimDisplay(SIZE)
-teensyDisplay = led.teensy.TeensyDisplay() # FIXME this is just a dummy
+teensyDisplay = led.teensy.TeensyDisplay(sys.argv[1])
+simDisplay = led.sim.SimDisplay(teensyDisplay.size())
+pixelSurface = pygame.Surface(teensyDisplay.size())
 
-font = pygame.font.Font("ttf-bitstream-vera-1.10/VeraBd.ttf", 12)
+font = pygame.font.SysFont("Arial", 12)
 
-message = font.render("*** Space ist offen & Jens ist nicht kalt !!! ***", True, pygame.Color("#ffffff"))
+message = font.render("*** Hello World! ***", True, pygame.Color("#ffffff"))
 messageRect = message.get_rect()
 
 x = 10
@@ -31,7 +28,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-    x = - ((pygame.time.get_ticks() / SPEED) % (messageRect.width + pixelSurface.get_width()) - pixelSurface.get_width())
+    x = - ((pygame.time.get_ticks() / speed) % (messageRect.width + pixelSurface.get_width()) - pixelSurface.get_width())
     pixelSurface.fill(pygame.Color(0, 0, 0))
     messageRect.topleft = (x, y)
     pixelSurface.blit(message, messageRect)
@@ -42,4 +39,4 @@ while True:
     teensyDisplay.update(pixelSurface)
     simDisplay.update(pixelSurface)
 
-    fpsClock.tick(500)
+    fpsClock.tick(30)

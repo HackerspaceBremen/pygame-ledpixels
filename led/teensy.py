@@ -1,5 +1,6 @@
 import base
 import pygame
+import serial
 
 class TeensyDisplay(base.Display):
     """ A Teensy driven LED display.
@@ -7,18 +8,23 @@ class TeensyDisplay(base.Display):
         TODO implement this :)
     """
 
-    def __init__(self):
+    def __init__(self, serialPort):
         super(base.Display, self).__init__()
-        # TODO implement this
+        self._serial = serial.Serial(serialPort, timeout=1)
+        self._query_config()
+
+    def _query_config(self):
+        self._serial.write('?')
+        _config = self._serial.readline()
+        self._size = tuple([int(x) for x in _config.split(',')])
 
     def size(self):
-        # TODO implement this
-        pass
+        return self._size
 
     def depth(self):
-        # TODO implement this
-        pass
+        return 24 # fixed depth
 
     def update(self, surface):
         rgb_pixels = pygame.image.tostring(surface, 'RGB')
-        # TODO send RGB pixels
+        self._serial.write('*')
+        self._serial.write(rgb_pixels)
