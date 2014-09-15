@@ -1,6 +1,8 @@
 import base
 import pygame
 
+GRIDCOLOR = pygame.Color(20,20,20)
+
 class SimDisplay(base.Display):
     """ 'Simulation' of the LED display, using pygame.display to show a simulation of the LEDs
     """
@@ -18,7 +20,21 @@ class SimDisplay(base.Display):
     def depth(self):
         return self._surface.get_bitsize()
 
+    def draw_grid(self, surface):
+        x0 = y0 = 0
+        x1 = surface.get_width()
+        y1 = surface.get_height()
+
+        while x0 <= surface.get_width():
+            pygame.draw.line(surface, GRIDCOLOR, (x0, 0), (x0, y1))
+            x0 += self._scale
+
+        while y0 <= surface.get_height():
+            pygame.draw.line(surface, GRIDCOLOR, (0, y0), (x1, y0))
+            y0 += self._scale
+
     def update(self, surface):
         pygame.transform.scale(surface, self._surface.get_size(), self._surface)
+        self.draw_grid(self._surface)
         pygame.display.update()
 
