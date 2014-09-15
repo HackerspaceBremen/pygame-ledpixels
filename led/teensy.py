@@ -1,3 +1,4 @@
+import sys
 import base
 import pygame
 import serial
@@ -13,9 +14,9 @@ class TeensyDisplay(base.Display):
         try:
             self._serial = serial.Serial(serialPort, timeout=1)
             self._query_config()
-        except IOError as e:
+        except Exception as e:
             # fallback
-            print "I/O error({0}): {1}".format(e.errno, e.strerror)
+            print "Display error:" , e.message
             print "LED display will not work, using fallback size {0}".format(fallbackSize)
             self._serial = None
             self._size = fallbackSize
