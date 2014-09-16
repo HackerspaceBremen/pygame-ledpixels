@@ -10,19 +10,32 @@ BLACK = pygame.Color(0,0,0)
 WHITE = pygame.Color(255, 255, 255)
 RED = pygame.Color(255, 0, 0)
 
-ledDisplay = led.teensy.TeensyDisplay(sys.argv[1])
-size = ledDisplay.size()
-#size = (90, 20)
+# detect if a serial/USB port is given as argument
+hasSerialPortParameter = ( sys.argv.__len__() > 1 )
 
+# use 90 x 20 matrix when no usb port for real display provided
+fallbackSize = ( 90, 20 )
+
+if hasSerialPortParameter:
+    serialPort = sys.argv[ 1 ]
+    print "INITIALIZING WITH USB-PORT: "+serialPort
+    ledDisplay = led.teensy.TeensyDisplay( serialPort, fallbackSize )
+else:
+    print "INITIALIZING WITH SIMULATOR ONLY."
+    ledDisplay = led.teensy.TeensyDisplay( None, fallbackSize )
+
+# use same size for sim and real LED panel
+size = ledDisplay.size()
+simDisplay = led.sim.SimDisplay(size)
+screen = pygame.Surface(size)
+
+# every time an alien spawns...
 alienFrequency = 2000
 alienSpeed = 0.01
 
-# every time an alien spawns...
 alienSpeedFactor = 1.01
 alienFrequencyFactor = 1.02
 
-simDisplay = led.sim.SimDisplay(size)
-screen = pygame.Surface(size)
 
 class Animation:
     def __init__(self):
