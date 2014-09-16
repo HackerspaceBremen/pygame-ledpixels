@@ -7,4 +7,4 @@ TODO add more documentation, samples etc.
 
 import base, sim, teensy
 
-__all__ = ["base", "sim", "teensy"]
+__all__ = ["base", "sim", "teensy", "game_controller"]

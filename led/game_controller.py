@@ -28,8 +28,9 @@ class GameController:
 
     def get_events(self):
         _events = []
-        _event = bytearray(1)
-        while self._serial.readinto(_event) > 0:
-            _events.append((int(_event[0]) & 0xFE, int(_event[0]) & 0x01))
+        if self._serial:
+            _event = bytearray(1)
+            while self._serial.readinto(_event) > 0:
+                _events.append((int(_event[0]) & 0xFE, int(_event[0]) & 0x01))
 
         return _events
