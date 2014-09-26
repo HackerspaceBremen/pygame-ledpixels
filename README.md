@@ -33,11 +33,12 @@ simDisplay = led.sim.SimDisplay(teensyDisplay.size())
 # create an offscreen surface - this is where the game / graphics will be painted!
 pixelSurface = pygame.Surface(teensyDisplay.size())
 
-# main loop:
-# - draw your graphics to the offscreen surface
-# - call update() on the display(s)
-
-teensyDisplay.update(pixelSurface)
-simDisplay.update(pixelSurface)
+while True:
+  # main loop:
+  # - draw your graphics to the offscreen surface
+  # - call update() on the display(s)
+  
+  teensyDisplay.update(pixelSurface)
+  simDisplay.update(pixelSurface)
 
 ```
