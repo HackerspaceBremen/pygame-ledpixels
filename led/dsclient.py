@@ -77,12 +77,14 @@ class DisplayServerClientDisplay(base.Display):
             readable, writable, exceptional = select.select([self._socket], [], [], 0)
 
             if readable:
-        		data = self._socket.recv(4096)
-        		# Handle the incoming data
-
+        		self._buf += self._socket.recv(4096)
+        		
             rgb_pixels = pygame.image.tostring(surface, 'RGB')
             #self._serial.write('*')
             #self._serial.write(rgb_pixels)
             base64_pixels = base64.b64encode(rgb_pixels)
             self._socket.sendall("blit: 0,0,{0},{1}\n".format(self._size[0], self._size[1]))
             self._socket.sendall("data: " + base64_pixels + "\n\n")
+
+            status = self._readproperty('blit')
+            print "Blit status: " + status
