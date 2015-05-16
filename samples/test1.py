@@ -11,13 +11,14 @@ pygame.display.set_mode()
 
 fpsClock = pygame.time.Clock()
 
-teensyDisplay = led.teensy.TeensyDisplay(sys.argv[1])
-simDisplay = led.sim.SimDisplay(teensyDisplay.size())
-pixelSurface = pygame.Surface(teensyDisplay.size())
+#teensyDisplay = led.teensy.TeensyDisplay(sys.argv[1])
+dsDisplay = led.dsclient.DisplayServerClientDisplay('localhost', 8123)
+simDisplay = led.sim.SimDisplay(dsDisplay.size())
+pixelSurface = pygame.Surface(dsDisplay.size())
 
 font = pygame.font.SysFont("Arial", 12)
 
-message = font.render("*** Hello World! ***", True, pygame.Color("#ffffff"))
+message = font.render("*** This is a test message *** ", True, pygame.Color("#00ff00"))
 messageRect = message.get_rect()
 
 x = 10
@@ -34,9 +35,9 @@ while True:
     pixelSurface.blit(message, messageRect)
 
     fps = font.render("FPS: {:.1f}".format(fpsClock.get_fps()), True, pygame.Color("#ff0000"))
-    pixelSurface.blit(fps, (0,0))
+    #pixelSurface.blit(fps, (0,0))
 
-    teensyDisplay.update(pixelSurface)
+    dsDisplay.update(pixelSurface)
     simDisplay.update(pixelSurface)
 
     fpsClock.tick(30)
