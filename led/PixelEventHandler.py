@@ -3,7 +3,7 @@ __author__ = 'Jannes Hoeke'
 from pygame.locals import *
 
 # Return values
-UP, DOWN, LEFT, RIGHT, B1, B2, B3, P1, P2, UNKNOWN = range(10)
+UP, DOWN, LEFT, RIGHT, B1, B2, B3, P1, P2, UNKNOWN, EXIT = range(11)
 PUSH, RELEASE = range(2)
 PLAYER1, PLAYER2 = range(2)
 
@@ -35,14 +35,19 @@ class PixelEvent:
         self.type = type
         self.player = player
 
+# Used for RELEASE events of axes
 _last_ax0 = None
 _last_ax1 = None
 _last_ax2 = None
 _last_ax3 = None
 
+# Used for EXIT event
+_b1 = False
+_b2 = False
+
 # event should be of type pygame.event.Event
 def process_event(event):
-    global _last_ax0, _last_ax1, _last_ax2, _last_ax3
+    global _last_ax0, _last_ax1, _last_ax2, _last_ax3, _b1, _b2
 
     try:
         # Keypresses on keyboard and joystick axis motions / button presses
@@ -91,9 +96,19 @@ def process_event(event):
 
             # Playerbuttons
             elif event.type == KEYDOWN and event.key == KB_P1 or event.type == JOYBUTTONDOWN and event.button == 7:
-                return PixelEvent(P1, PUSH, PLAYER1)
+                _b1 = True
+                
+                if _b1 and _b2:
+                    return PixelEvent(EXIT, -1, -1)
+                else:
+                    return PixelEvent(P1, PUSH, PLAYER1)
             elif event.type == KEYDOWN and event.key == KB_P2 or event.type == JOYBUTTONDOWN and event.button == 8:
-                return PixelEvent(P2, PUSH, PLAYER2)
+                _b2 = True
+                
+                if _b1 and _b2:
+                    return PixelEvent(EXIT, -1, -1)
+                else:
+                    return PixelEvent(P2, PUSH, PLAYER2)
 
         # Button/Key releases or joystick home position
         elif event.type == KEYUP or event.type == JOYAXISMOTION and event.value == 0.0 or event.type == JOYBUTTONUP:
@@ -133,8 +148,10 @@ def process_event(event):
 
             # Playerbuttons
             elif event.type == KEYUP and event.key == KB_P1 or event.type == JOYBUTTONUP and event.button == 7:
+                _b1 = False
                 return PixelEvent(P1, RELEASE, PLAYER1)
             elif event.type == KEYUP and event.key == KB_P2 or event.type == JOYBUTTONUP and event.button == 8:
+                _b2 = False
                 return PixelEvent(P2, RELEASE, PLAYER2)
 
         return PixelEvent(UNKNOWN, -1, -1)
