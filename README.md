@@ -42,3 +42,6 @@ while True:
   simDisplay.update(pixelSurface)
 
 ```
+
+Check this gist on how to use the PixelEventHandler:
+https://gist.github.com/jh0ker/8a63a66d368d7b48c89d
