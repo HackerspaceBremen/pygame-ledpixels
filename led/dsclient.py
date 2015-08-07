@@ -57,7 +57,7 @@ class DisplayServerClientDisplay(base.Display):
             while True:
                 if self._buf.find('\n') != -1:
                     line, self._buf = self._buf.split('\n', 1)
-                    print "Recv Line: " + repr(line)
+                    #print "Recv Line: " + repr(line)
 
                     if line.strip() != '':
                         return line.split(':', 1)
@@ -87,4 +87,4 @@ class DisplayServerClientDisplay(base.Display):
             self._socket.sendall("data: " + base64_pixels + "\n\n")
 
             status = self._readproperty('blit')
-            print "Blit status: " + status
+            #print "Blit status: " + status
