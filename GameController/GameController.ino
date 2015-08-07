@@ -15,18 +15,31 @@
 #define BTN_P2_DOWN    44
 #define BTN_P2_LEFT    46
 #define BTN_P2_RIGHT   42
+#define BTN_PLAYER_A   50
+#define BTN_PLAYER_B   52
+
 
 const byte buttons[] = {
   BTN_P1_BLUE, BTN_P1_RED, BTN_P1_YELLOW, BTN_P1_UP, BTN_P1_DOWN, BTN_P1_LEFT, BTN_P1_RIGHT,
-  BTN_P2_BLUE, BTN_P2_RED, BTN_P2_YELLOW, BTN_P2_UP, BTN_P2_DOWN, BTN_P2_LEFT, BTN_P2_RIGHT
+  BTN_P2_BLUE, BTN_P2_RED, BTN_P2_YELLOW, BTN_P2_UP, BTN_P2_DOWN, BTN_P2_LEFT, BTN_P2_RIGHT,
+  2, 3
 };
-const int buttonCount = 14;
+
+
+
+const byte codes[] = {
+  BTN_P1_BLUE, BTN_P1_RED, BTN_P1_YELLOW, BTN_P1_UP, BTN_P1_DOWN, BTN_P1_LEFT, BTN_P1_RIGHT,
+  BTN_P2_BLUE, BTN_P2_RED, BTN_P2_YELLOW, BTN_P2_UP, BTN_P2_DOWN, BTN_P2_LEFT, BTN_P2_RIGHT,
+  BTN_PLAYER_A, BTN_PLAYER_B
+};
+const int buttonCount = 16;
 byte buttonStates[buttonCount] = {0};
 unsigned long lastTime = 0;
 const long debounce = 20;
 
 void setup() {
- Serial.begin(115200);
+ Serial.begin(1200);
+ Serial3.begin(1200);
  for (int i = 0; i < buttonCount; i++) {
     pinMode(buttons[i], INPUT);
  }
@@ -39,7 +52,7 @@ void loop() {
       for (int i = 0; i < buttonCount; i++) {
         value = digitalRead(buttons[i]);
         if (value != buttonStates[i]) {
-          send(buttons[i], value);
+          send(codes[i], value);
           buttonStates[i] = value;
         }
      }
@@ -49,6 +62,8 @@ void loop() {
 
 void send(byte button, byte val)
 {
+  Serial3.write(button | val);
   Serial.write(button | val);
+  Serial3.flush();
   Serial.flush();
 } 
